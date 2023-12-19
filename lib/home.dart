@@ -4,6 +4,8 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_application_1/components/app_button.dart';
 import 'package:flutter_application_1/components/app_text_field.dart';
 import 'package:flutter_application_1/edit.dart';
+import 'package:flutter_application_1/login.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomePage extends StatefulWidget {
@@ -53,6 +55,17 @@ class _HomePageState extends State<HomePage> {
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
                 ),
+              ),
+              AppButton(
+                text: "Logout",
+                color: Colors.red,
+                onPressed: () {
+                  final box = GetStorage();
+                  box.remove('username');
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (context) => LoginPage()),
+                      (route) => false);
+                },
               ),
               SizedBox(
                 height: 20,

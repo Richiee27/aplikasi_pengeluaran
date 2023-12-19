@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/home.dart';
+import 'package:flutter_application_1/login.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
@@ -19,7 +20,7 @@ class MainApp extends StatelessWidget {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        body: HomePage(),
+        body: LoginPage(),
       ),
     );
   }
