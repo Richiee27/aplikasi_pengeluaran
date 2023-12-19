@@ -64,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
               height: 40,
             ),
             Text(
-              "Silahkan Login",
+              "Silahkan\nLogin",
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.w300),
             ),
             const SizedBox(
