@@ -4,15 +4,19 @@ import 'package:flutter_application_1/components/app_text_field.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class EditPage extends StatefulWidget {
-  final String description;
-  final String amount;
+  final String nama_lengkap;
+  final String ttl;
   final int id;
+  final String alamat;
+  final String alamat_ktp;
 
   const EditPage({
     super.key,
-    required this.amount,
-    required this.description,
+    required this.ttl,
+    required this.nama_lengkap,
     required this.id,
+    required this.alamat,
+    required this.alamat_ktp,
   });
 
   @override
@@ -20,27 +24,38 @@ class EditPage extends StatefulWidget {
 }
 
 class _EditPageState extends State<EditPage> {
-  TextEditingController keteranganController = new TextEditingController();
-  TextEditingController amountController = new TextEditingController();
+  TextEditingController keteranganController = TextEditingController();
+  TextEditingController alamatController = TextEditingController();
+  TextEditingController alamatktpController = TextEditingController();
+  TextEditingController ttlController = TextEditingController();
+  TextEditingController angkaController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    keteranganController.text = widget.description;
-    amountController.text = widget.amount;
+    keteranganController.text = widget.nama_lengkap;
+    ttlController.text = widget.ttl;
+    alamatController.text = widget.alamat;
+    alamatktpController.text = widget.alamat_ktp;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          "Formulir",
+          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+        ),
+      ),
       body: Container(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "Edit Page",
+              const Text(
+                "Edit Data Diri",
                 style: TextStyle(fontSize: 35, fontWeight: FontWeight.w700),
               ),
               const SizedBox(
@@ -48,25 +63,41 @@ class _EditPageState extends State<EditPage> {
               ),
               AppTextField(
                 controller: keteranganController,
-                label: "Keterangan",
+                label: "Nama Lengkap",
               ),
               const SizedBox(
                 height: 20,
               ),
               AppTextField(
-                controller: amountController,
-                label: "Jumlah Pengeluaran",
+                controller: ttlController,
+                label: "Tempat Tanggal Lahir",
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              AppTextField(
+                controller: alamatController,
+                label: "Alamat Domisili",
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              AppTextField(
+                controller: alamatktpController,
+                label: "Alamat KTP",
               ),
               const SizedBox(
                 height: 30,
               ),
               AppButton(
                 text: "Simpan",
-                color: Colors.red,
+                color: Colors.green,
                 onPressed: () async {
-                  await Supabase.instance.client.from('expense').update({
-                    'description': keteranganController.text,
-                    'amount': amountController.text,
+                  await Supabase.instance.client.from('rekrutmen').update({
+                    'nama_lengkap': keteranganController.text,
+                    'ttl': ttlController.text,
+                    'alamat': alamatController,
+                    'alamat_ktp': alamatktpController,
                   }).match({'id': widget.id});
                   Navigator.of(context).pop();
                 },

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/app_button.dart';
 import 'package:flutter_application_1/components/app_text_field.dart';
-import 'package:flutter_application_1/home.dart';
+import 'package:flutter_application_1/frontpage.dart';
 import 'package:get_storage/get_storage.dart';
 
 class LoginPage extends StatefulWidget {
@@ -26,12 +26,12 @@ class _LoginPageState extends State<LoginPage> {
     String? username = box.read('username');
     if (username != null) {
       print("LOGIN USER (username)");
-      Future.delayed(Duration(milliseconds: 100), () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: ((context) => HomePage())));
+      Future.delayed(const Duration(milliseconds: 100), () {
+        Navigator.push(context,
+            MaterialPageRoute(builder: ((context) => const FrontPage())));
       });
-      Navigator.push(
-          context, MaterialPageRoute(builder: ((context) => HomePage())));
+      Navigator.push(context,
+          MaterialPageRoute(builder: ((context) => const FrontPage())));
     }
   }
 
@@ -39,8 +39,8 @@ class _LoginPageState extends State<LoginPage> {
     String username = usernameController.text;
     String password = passwordController.text;
 
-    if (username != 'admin' || password != 'admin') {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    if (username != 'user' || password != 'user123') {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Username atau Password salah"),
       ));
       return;
@@ -48,23 +48,31 @@ class _LoginPageState extends State<LoginPage> {
     final box = GetStorage();
     box.write('username', username);
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => HomePage()));
+        context, MaterialPageRoute(builder: (context) => const FrontPage()));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          "Provices Indonesia",
+          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+      ),
       body: Container(
+        margin: const EdgeInsets.all(20.0),
         color: Colors.white,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            SizedBox(
+            const SizedBox(
               height: 40,
             ),
-            Text(
-              "Silahkan\nLogin",
+            const Text(
+              "Login App\nTerdahulu",
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.w300),
             ),
             const SizedBox(
@@ -81,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
               controller: passwordController,
               label: "Password",
             ),
-            SizedBox(
+            const SizedBox(
               height: 40,
             ),
             AppButton(

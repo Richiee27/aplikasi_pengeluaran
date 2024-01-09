@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_application_1/components/app_button.dart';
 import 'package:flutter_application_1/components/app_text_field.dart';
 import 'package:flutter_application_1/edit.dart';
-import 'package:flutter_application_1/login.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomePage extends StatefulWidget {
@@ -16,10 +12,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Map<String, dynamic>> pengeluaran_list = [];
+  List<Map<String, dynamic>> rekrutmen_List = [];
 
   TextEditingController keteranganController = TextEditingController();
-  TextEditingController amountController = TextEditingController();
+  TextEditingController alamatController = TextEditingController();
+  TextEditingController alamatktpController = TextEditingController();
+  TextEditingController ttlController = TextEditingController();
+  TextEditingController angkaController = TextEditingController();
 
   @override
   void initState() {
@@ -30,72 +29,80 @@ class _HomePageState extends State<HomePage> {
 
   void fetchData() async {
     dynamic response = await Supabase.instance.client
-        .from('expense')
+        .from('rekrutmen')
         .select<List<Map<String, dynamic>>>();
     setState(() {
-      pengeluaran_list = response;
+      rekrutmen_List = response;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          "Formulir Data Diri",
+          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+      ),
       body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
-                height: 50,
+              const SizedBox(
+                height: 30,
               ),
-              Text(
-                "Catat\nPengeluaran",
+              const Text(
+                "Silahkan diisi dengan lengkap",
                 style: TextStyle(
-                  fontSize: 32,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
-              ),
-              AppButton(
-                text: "Logout",
-                color: Colors.red,
-                onPressed: () {
-                  final box = GetStorage();
-                  box.remove('username');
-                  Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (context) => LoginPage()),
-                      (route) => false);
-                },
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              AppTextField(
-                controller: keteranganController,
-                label: "Keterangan",
               ),
               const SizedBox(
                 height: 20,
               ),
               AppTextField(
-                controller: amountController,
-                label: "Jumlah Pengeluaran",
+                controller: keteranganController,
+                label: "Nama Lengkap",
               ),
+              const SizedBox(
+                height: 20,
+              ),
+              AppTextField(
+                  label: "Tempat Tanggal Lahir", controller: ttlController),
+              const SizedBox(
+                height: 20,
+              ),
+              AppTextField(
+                controller: alamatController,
+                label: "Alamat domisili",
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              AppTextField(
+                  label: "Alamat KTP", controller: alamatktpController),
               const SizedBox(
                 height: 20,
               ),
               AppButton(
                 onPressed: () async {
-                  await Supabase.instance.client.from('expense').insert({
-                    'amount': int.parse(amountController.text),
-                    'description': keteranganController.text
+                  await Supabase.instance.client.from('rekrutmen').insert({
+                    'alamat': alamatController.text,
+                    'nama_lengkap': keteranganController.text,
+                    'ttl': ttlController.text,
+                    'alamat_ktp': alamatktpController.text,
                   });
                   fetchData();
                 },
                 text: "Simpan",
-                color: Colors.black,
+                color: Colors.green,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               AppButton(
@@ -104,26 +111,28 @@ class _HomePageState extends State<HomePage> {
                 textColor: Colors.black,
               ),
               Visibility(
-                visible: pengeluaran_list.isEmpty,
+                visible: rekrutmen_List.isEmpty,
                 child: Image.asset("images/empty_image.png"),
               ),
               Column(
-                children: pengeluaran_list
+                children: rekrutmen_List
                     .map(
-                      (pengeluaran) => Card(
+                      (rekrutmen) => Card(
                         child: Container(
-                          padding: EdgeInsets.all(20),
+                          padding: const EdgeInsets.all(20),
                           child: Column(
                             children: [
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(pengeluaran['description']),
-                                  Text(pengeluaran['amount'].toString()),
+                                  Text(rekrutmen['nama_lengkap']),
+                                  Text(rekrutmen['ttl']),
+                                  Text(rekrutmen['alamat']),
+                                  Text(rekrutmen['alamat_ktp']),
                                 ],
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 20,
                               ),
                               AppButton(
@@ -131,13 +140,13 @@ class _HomePageState extends State<HomePage> {
                                 color: Colors.red,
                                 onPressed: () async {
                                   await Supabase.instance.client
-                                      .from('expense')
+                                      .from('rekrutmen')
                                       .delete()
-                                      .match({'id': pengeluaran['id']});
+                                      .match({'id': rekrutmen['id']});
                                   fetchData();
                                 },
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 20,
                               ),
                               AppButton(
@@ -145,15 +154,17 @@ class _HomePageState extends State<HomePage> {
                                 color: Colors.yellow,
                                 onPressed: () {
                                   Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => EditPage(
-                                                id: pengeluaran['id'],
-                                                description:
-                                                    pengeluaran['description'],
-                                                amount: pengeluaran['amount']
-                                                    .toString(),
-                                              ))).then((value) {
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => EditPage(
+                                                  id: rekrutmen['id'],
+                                                  nama_lengkap:
+                                                      rekrutmen['nama_lengkap'],
+                                                  ttl: rekrutmen['ttl'],
+                                                  alamat: rekrutmen['alamat'],
+                                                  alamat_ktp:
+                                                      rekrutmen['alamat_ktp'])))
+                                      .then((value) {
                                     fetchData();
                                   });
                                 },
